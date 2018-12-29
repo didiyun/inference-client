@@ -1,0 +1,5 @@
+requests==2.14.2
+tensorflow==1.7.1
+numpy==1.14.2
+tensorflow_serving_api==1.7.1
+protobuf==3.5.2
