@@ -1,0 +1,50 @@
+syntax = "proto2";
+
+package caffe2;
+import "caffe2.proto";
+
+option cc_generic_services = true;
+
+// Metadata for an inference request such as the model name and version.
+message ModelSpec {
+  // Required servable name.
+  required string name = 1;
+
+  // Optional version.
+  optional int64 version = 2;
+
+  // A named signature to evaluate. If unspecified, the default signature will
+  // be used.
+  optional string signature_name = 3;
+}
+
+
+
+message PredictRequest {
+  // Model Specification. If version is not specified, will use the latest
+  // (numerical) version.
+  required ModelSpec model_spec = 1;
+
+  // Input tensors.
+  // Names of input tensor are alias names. The mapping from aliases to real
+  // input tensor names is stored in the SavedModel export as a prediction
+  // SignatureDef under the 'inputs' field.
+   map<string, TensorProto> inputs = 2;
+}
+
+// Response for PredictRequest on successful run.
+message PredictResponse {
+  optional ModelSpec model_spec = 1;
+  // Output tensors.
+  map<string, TensorProto> outputs = 2;
+}
+
+
+// open source marker; do not remove
+// PredictionService provides access to machine-learned models loaded by
+// model_servers.
+service PytorchPredictionService {
+  // Predict -- provides access to loaded TensorFlow model.
+  rpc Predict(PredictRequest) returns (PredictResponse);
+  
+}

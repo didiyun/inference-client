@@ -11,20 +11,16 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
-import org.tensorflow.framework.DataType;
-import org.tensorflow.framework.TensorProto;
-import org.tensorflow.framework.TensorShapeProto;
-import tensorflow.serving.Model;
-import tensorflow.serving.Predict;
+import caffe2.Caffe2;
+import caffe2.Caffe2Service;
 
 import java.util.Map;
 
 
-public class MnistClientDemo {
+public class ResnetClientDemo {
 
     private String url;
-
-    public MnistClientDemo(String url) {
+    public ResnetClientDemo(String url) {
         this.url = url;
     }
 
@@ -32,13 +28,13 @@ public class MnistClientDemo {
      * predict from thrift server
      */
     public void predict() {
-        TensorProto imageTensor = createImageTensor(getMockImage());
+        Caffe2.TensorProto imageTensor = createImageTensor(getMockImage());
         requestService(imageTensor);
     }
 
     // mock image
-    private int[][] getMockImage() {
-        return new int[28][28];
+    private float[][][] getMockImage() {
+        return new float[3][224][224];
     }
 
     /**
@@ -47,22 +43,21 @@ public class MnistClientDemo {
      * @param image image content
      * @return image tensor
      */
-    private TensorProto createImageTensor(int[][] image) {
+    private Caffe2.TensorProto createImageTensor(float[][][] image) {
         try {
-            TensorShapeProto.Dim featuresDim1 = TensorShapeProto.Dim.newBuilder()
-                    .setSize(1).build();
-            TensorShapeProto.Dim featuresDim2 = TensorShapeProto.Dim.newBuilder()
-                    .setSize(image.length * image.length).build();
-            TensorShapeProto imageFeatureShape = TensorShapeProto.newBuilder()
-                    .addDim(featuresDim1).addDim(featuresDim2).build();
+            Caffe2.TensorProto.Builder imageTensorBuilder = Caffe2.TensorProto.newBuilder();
+            imageTensorBuilder.setDataType(Caffe2.TensorProto.DataType.FLOAT);
+            imageTensorBuilder.addDims(1);
+            imageTensorBuilder.addDims(3);
+            imageTensorBuilder.addDims(224);
+            imageTensorBuilder.addDims(224);
 
-            TensorProto.Builder imageTensorBuilder = TensorProto.newBuilder();
-            imageTensorBuilder.setDtype(DataType.DT_FLOAT).setTensorShape(imageFeatureShape);
-
-            for (int i = 0; i < image.length; ++i) {
-                for (int j = 0; j < image.length; ++j) {
-                    imageTensorBuilder.addFloatVal(image[i][j]);
-                }
+            for (int a = 0; a < 3; ++a) {
+                for (int i = 0; i < 224; ++i) {
+	 	    for (int j = 0; j < 224; ++j) {
+                        imageTensorBuilder.addFloatData(1);
+		    }
+	        }
             }
             return imageTensorBuilder.build();
         } catch (Exception e) {
@@ -76,7 +71,7 @@ public class MnistClientDemo {
      *
      * @param requestTensor request image tensor
      */
-    private void requestService(TensorProto requestTensor) {
+    private void requestService(Caffe2.TensorProto requestTensor) {
         try {
             SSLContextBuilder builder = new SSLContextBuilder();
             builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
@@ -88,27 +83,27 @@ public class MnistClientDemo {
             post.setHeader("Content-Type", "application/proto");
             // replace YOUR_TOKEN with didiyun api token
             post.setHeader("Authorization", "Bearer YOUR_TOKEN");
-            post.setEntity(new ByteArrayEntity(generateTFRequestBody(requestTensor)));
+            post.setEntity(new ByteArrayEntity(generateCaffe2RequestBody(requestTensor)));
             HttpResponse response = client.execute(post);
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK 
                     && "application/proto".equals(response.getFirstHeader("Content-Type").getValue())) {
                 // get result tensor
                 byte[] raw = EntityUtils.toByteArray(response.getEntity());
-                Predict.PredictResponse res = Predict.PredictResponse.parseFrom(raw);
-                Map<String, TensorProto> outputMap = res.getOutputsMap();
-                for (TensorProto tensor : outputMap.values()) {
-                    System.out.println("number of probabilities " + tensor.getFloatValCount());
+                Caffe2Service.PredictResponse res = Caffe2Service.PredictResponse.parseFrom(raw);
+                Map<String, Caffe2.TensorProto> outputMap = res.getOutputsMap();
+                for (Caffe2.TensorProto tensor : outputMap.values()) {
+                    System.out.println("number of probabilities " + tensor.getFloatDataCount());
                     int maxIdx = -1;
                     float maxVal = -1f;
-                    for (int i = 0; i < tensor.getFloatValCount(); i++) {
-                        float value = tensor.getFloatVal(i);
+                    for (int i = 0; i < tensor.getFloatDataCount(); i++) {
+                        float value = tensor.getFloatData(i);
                         System.out.println("probability of " + i + " is " + value);
                         if (maxVal < value) {
                             maxIdx = i;
                             maxVal = value;
                         }
                     }
-                    System.out.println("most probably the digit on the image is " + maxIdx);
+                    System.out.println("most probably the index of the image is " + maxIdx);
                 }
             } else {
                 // print error message
@@ -121,13 +116,13 @@ public class MnistClientDemo {
         }
     }
 
-    private byte[] generateTFRequestBody(TensorProto tensor) {
+    private byte[] generateCaffe2RequestBody(Caffe2.TensorProto tensor) {
         // generate tf request body
-        Model.ModelSpec modelSpec = Model.ModelSpec.newBuilder()
-                .setName("mnist")
+        Caffe2Service.ModelSpec modelSpec = Caffe2Service.ModelSpec.newBuilder()
+                .setName("resnet")
                 .setSignatureName("predict_images")
                 .build();
-        Predict.PredictRequest request = Predict.PredictRequest.newBuilder()
+        Caffe2Service.PredictRequest request = Caffe2Service.PredictRequest.newBuilder()
                 .setModelSpec(modelSpec)
                 .putInputs("images", tensor)
                 .build();
@@ -135,7 +130,7 @@ public class MnistClientDemo {
     }
 
     public static void main(String[] args) {
-        // replace with your url, like https://${ip}:${port}/v1/model/predict
-        new MnistClientDemo(args[0]).predict();
+        // replace with your url, like https://${ip}:${port}/v1/model/pytorch/predict
+        new ResnetClientDemo(args[0]).predict();
     }
 }

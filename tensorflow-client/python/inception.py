@@ -22,17 +22,17 @@ def sendRequest(url):
 
     data = request.SerializeToString()
 
-    type = "application/proto"
+    data_type = "application/proto"
     headers = {
         # !!! set content type 
-        'content-type': type,
+        'content-type': data_type,
         # !!! replace your token
-        'Authorization': "Bearer 9a609744ad675e8fbfcdbf14511b24e6ddd6b427b4d256969534a81d0773f4d7"
+        'Authorization': "Bearer YOUR_TOKEN"
     }
 
     res = requests.post(url, data, headers=headers)
 
-    if (res.status_code == 200 and res.headers['Content-Type'] == type):
+    if (res.status_code == 200 and res.headers['Content-Type'] == data_type):
         # print res.content
         response.ParseFromString(res.content)
         le = len(response.outputs["classes"].string_val)

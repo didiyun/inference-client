@@ -20,16 +20,16 @@ def sendRequest(url):
 
     data = request.SerializeToString()
 
-    type = "application/proto"
+    data_type = "application/proto"
     headers = {
         # !!! set content type 
-        'content-type': type,
+        'content-type': data_type,
         # !!! replace your token
-        'Authorization': "TODO token"
+        'Authorization': "Bearer YOUR_TOKEN"
     }
 
     res = requests.post(url, data, headers=headers, verify=False)
-    if (res.status_code == 200 and res.headers['Content-Type'] == type):
+    if (res.status_code == 200 and res.headers['Content-Type'] == data_type):
         # print res.content
         response.ParseFromString(res.content)
         print(MessageToDict(response))

@@ -22,5 +22,5 @@ FOREACH(FIL ${TF_PROTOS})
 ENDFOREACH()
 
 
-add_executable(serving_client serving_client.cc ${BAR_SRCS})
-target_link_libraries(serving_client curl ${PROTOBUF_LIBRARIES})
+add_executable(tf_serving_client tf_serving_client.cc ${BAR_SRCS})
+target_link_libraries(tf_serving_client curl ${PROTOBUF_LIBRARIES})

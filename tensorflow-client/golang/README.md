@@ -7,4 +7,4 @@
 
 ## run test
 * 增加 token
-* ./client --url=https://ip:port/v1/model/predict
+* ./client --url=https://ip:port/v1/model/tensorflow/predict

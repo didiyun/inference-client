@@ -72,34 +72,32 @@ std::string prepareRequest() {
 
 
 void parseResponse(const std::string &res) {
-  PredictResponse response;
-  response.ParseFromString(res);
-  std::cout << "outputs size is " << response.outputs_size() << std::endl;
-  OutMap& map_outputs = *response.mutable_outputs();
-  OutMap::iterator iter;
-  int output_index = 0;
+    PredictResponse response;
+    response.ParseFromString(res);
+    std::cout << "outputs size is " << response.outputs_size() << std::endl;
+    OutMap& map_outputs = *response.mutable_outputs();
+    OutMap::iterator iter;
+    int output_index = 0;
 
-  // read the response
-  for (iter = map_outputs.begin(); iter != map_outputs.end(); ++iter) {
-    tensorflow::TensorProto& result_tensor_proto = iter->second;
-    std::cout << "number of probabilies " << result_tensor_proto.float_val_size() << std::endl;
+    // read the response
+    for (iter = map_outputs.begin(); iter != map_outputs.end(); ++iter) {
+      tensorflow::TensorProto& result_tensor_proto = iter->second;
+      std::cout << "number of probabilies " << result_tensor_proto.float_val_size() << std::endl;
 
-    int maxIdx = -1;
-    float maxVal = -1;
-    for (int i = 0; i < result_tensor_proto.float_val_size(); ++i) {
-      float val = result_tensor_proto.float_val(i);
-      std::cout << "probability of " << i << " is " << val << std::endl;
+      int maxIdx = -1;
+      float maxVal = -1;
+      for (int i = 0; i < result_tensor_proto.float_val_size(); ++i) {
+          float val = result_tensor_proto.float_val(i);
+          std::cout << "probability of " << i << " is " << val << std::endl;
 
-      if (maxVal < val) {
-        maxVal = val;
-        maxIdx = i;
+          if (maxVal < val) {
+            maxVal = val;
+            maxIdx = i;
+          }
       }
+      std::cout << std::endl << "most probably the digit on the image is " << maxIdx << std::endl << std::endl;
+      ++output_index;
     }
-
-    std::cout << std::endl << "most probably the digit on the image is " << maxIdx << std::endl << std::endl;
-
-    ++output_index;
-   }
 }
 
 static size_t write_data(void *contents, size_t size, size_t nmemb, void *userp) {
@@ -121,7 +119,7 @@ static size_t header_callback(char *ptr, size_t size, size_t nmemb, void *userp)
 // TODO  auth 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
-        std::cerr << "Usage: ./serving_client \"http://10.84.164.236:8002/v1/model/predict/\"" << std::endl;
+        std::cerr << "Usage: ./serving_client \"http://10.84.164.236:8002/v1/model/tensorflow/predict/\"" << std::endl;
         return -1;
     }
     char* url = argv[1];
@@ -136,7 +134,7 @@ int main(int argc, char* argv[]) {
         std::string res, content_type;
         struct curl_slist *headers = NULL;
         headers = curl_slist_append(headers, "content-type: application/proto");
-        headers = curl_slist_append(headers, "Authorization: TODO token");
+        headers = curl_slist_append(headers, "Authorization: Bearer YOUR_TOKEN");
 
         curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
@@ -151,17 +149,17 @@ int main(int argc, char* argv[]) {
         CURLcode ret = curl_easy_perform(curl);
 
         if(ret == CURLE_OK) {
-          long response_code;
-          curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
-          // 检查 HTTP 返回值和类型
-          if (response_code == 200 && content_type == "application/proto") {
-              parseResponse(res);
-          } else {
-              fprintf(stderr, "response error : %s\n", res.c_str());
-          }
+            long response_code;
+            curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
+            // 检查 HTTP 返回值和类型
+            if (response_code == 200 && content_type == "application/proto") {
+                parseResponse(res);
+            } else {
+                fprintf(stderr, "response error : %s\n", res.c_str());
+            }
         } else {
-          fprintf(stderr, "curl_easy_perform() failed: %s\n",
-                      curl_easy_strerror(ret));
+            fprintf(stderr, "curl_easy_perform() failed: %s\n",
+                        curl_easy_strerror(ret));
         }
         curl_easy_cleanup(curl);
     }
