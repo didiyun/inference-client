@@ -3,7 +3,7 @@
 #include <string>
 
 #include <curl/curl.h>
-#include "protos/predict.pb.h"
+#include "gen_protos/predict.pb.h"
 
 using tensorflow::serving::PredictRequest;
 using tensorflow::serving::PredictResponse;

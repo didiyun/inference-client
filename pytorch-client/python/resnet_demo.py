@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*
 import sys
-import subprocess
 import numpy as np
 import requests
-subprocess.call("[ ! -d './gen-python-pb' ] && mkdir ./gen-python-pb", shell=True)
-subprocess.call("protoc -I ../protos --python_out=./gen-python-pb ../protos/*.proto", shell=True)
-sys.path.append("./gen-python-pb")
+sys.path.append("./gen_protos")
 import caffe2_service_pb2
 import utils
 
