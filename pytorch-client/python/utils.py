@@ -6,7 +6,7 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import sys
-sys.path.append('./gen-python-pb')
+sys.path.append('./gen_protos')
 import caffe2_pb2
 from google.protobuf.message import DecodeError, Message
 from google.protobuf import text_format

@@ -18,6 +18,7 @@
 ```shell
 cd tensorflow-client/python
 pip install -r requirements.txt
+sh build-protoc.sh
 python mnist.py https://ip:port/v1/model/tensorflow/predict
 ```
 
@@ -25,6 +26,7 @@ python mnist.py https://ip:port/v1/model/tensorflow/predict
 ```shell
 cd pytorch-client/python
 pip install -r requirements.txt
+sh build-protoc.sh
 python resnet_demo.py https://ip:port/v1/model/pytorch/predict
 ```
 

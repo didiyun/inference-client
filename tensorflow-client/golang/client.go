@@ -8,7 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	tf "./protos"
+	tf "./gen_protos"
 	"github.com/golang/protobuf/proto"
 )
 

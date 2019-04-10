@@ -1,5 +1,3 @@
-requests==2.14.2
-tensorflow==1.7.0
+requests==2.20.0
 numpy==1.14.2
-tensorflow-serving-api-python3~=1.7.0
 protobuf==3.5.2

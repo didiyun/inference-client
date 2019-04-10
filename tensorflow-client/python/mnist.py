@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 import sys
 import numpy as np
-import tensorflow as tf
 import requests
-from tensorflow_serving.apis import predict_pb2
+sys.path.append('./gen_protos')
+import predict_pb2
+from tf_utils import tensor_util
 from google.protobuf.json_format import MessageToDict
 
 def sendRequest(url):
@@ -13,10 +14,9 @@ def sendRequest(url):
     request.model_spec.name = 'mnist'
     request.model_spec.signature_name = 'predict_images'
 
-    array = np.random.ranf(784).reshape(1, 784).astype(np.float32)
-
+    array = np.random.ranf(784).reshape(1,784).astype(np.float32)
     request.inputs['images'].CopyFrom(
-        tf.make_tensor_proto(array, shape=[1, 784]))
+	tensor_util.make_tensor_proto(array))
 
     data = request.SerializeToString()
 
