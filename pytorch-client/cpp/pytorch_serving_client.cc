@@ -113,7 +113,7 @@ int main(int argc, char* argv[]) {
         std::string res, content_type;
         struct curl_slist *headers = NULL;
         headers = curl_slist_append(headers, "content-type: application/proto");
-        headers = curl_slist_append(headers, "Authorization: Bearer YOUR_TOKEN");
+        headers = curl_slist_append(headers, "Authorization: AppCode YOUR_CODE");
 
         curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
