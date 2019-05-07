@@ -27,7 +27,7 @@ def sendRequest(url):
         # !!! set content type 
         'content-type': data_type,
         # !!! replace your token
-        'Authorization': "Bearer YOUR_TOKEN"
+        'Authorization': "AppCode YOUR_CODE"
     }
 
     res = requests.post(url, data, headers=headers)

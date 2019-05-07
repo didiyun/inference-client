@@ -44,7 +44,7 @@ func httpDo(url string) {
 	}
 
 	req.Header.Set("Content-Type", "application/proto")
-	req.Header.Set("Authorization", "Bearer YOUR_TOKEN")
+	req.Header.Set("Authorization", "AppCode YOUR_CODE")
 
 	resp, err := client.Do(req)
 

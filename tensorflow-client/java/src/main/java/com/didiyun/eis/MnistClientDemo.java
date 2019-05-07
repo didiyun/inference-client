@@ -87,7 +87,7 @@ public class MnistClientDemo {
             HttpPost post = new HttpPost(url);
             post.setHeader("Content-Type", "application/proto");
             // replace YOUR_TOKEN with didiyun api token
-            post.setHeader("Authorization", "Bearer YOUR_TOKEN");
+            post.setHeader("Authorization", "AppCode YOUR_CODE");
             post.setEntity(new ByteArrayEntity(generateTFRequestBody(requestTensor)));
             HttpResponse response = client.execute(post);
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK 
