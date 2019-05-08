@@ -18,16 +18,15 @@
 ```shell
 cd tensorflow-client/python
 pip install -r requirements.txt
-sh build-protoc.sh
-python mnist.py https://ip:port/v1/model/tensorflow/predict
+python mnist.py API_URL(https://xxxxxx.eis.didiyunapi.com/v1/model/tensorflow/predict)
 ```
 
 ## 例子: Pytorch Python Client Demo
+[安装protoc](/pytorch-client/README.md)
+
 ```shell
 cd pytorch-client/python
 pip install -r requirements.txt
 sh build-protoc.sh
-python resnet_demo.py https://ip:port/v1/model/pytorch/predict
+python resnet_demo.py API_URL(https://xxxxxx.eis.didiyunapi.com/v1/model/pytorch/predict)
 ```
-
-

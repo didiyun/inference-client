@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 import sys
 import numpy as np
+import tensorflow as tf
 import requests
-sys.path.append('./gen_protos')
-import predict_pb2
-from tf_utils import tensor_util
+from tensorflow_serving.apis import predict_pb2
 from google.protobuf.json_format import MessageToDict
 
 def getImageData():
@@ -19,7 +18,7 @@ def sendRequest(url):
     request.model_spec.signature_name = 'predict_images'
 
     request.inputs['images'].CopyFrom(
-        tensor_util.make_tensor_proto(getImageData(), shape=[1]))
+        tf.make_tensor_proto(getImageData(), shape=[1]))
     data = request.SerializeToString()
 
     data_type = "application/proto"

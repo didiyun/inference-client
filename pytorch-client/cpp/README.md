@@ -7,7 +7,7 @@
 
 ##  Dependence
 * cmake >= 2.8.10
-* protobuf 3.6
+* protobuf 3.5.1
 * sudo yum install libcurl-devel
 
 ## Build

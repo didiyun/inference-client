@@ -19,7 +19,6 @@
 #include <string>
 #include <curl/curl.h>
 
-#include <gflags/gflags.h>
 #include "protos/caffe2_service.pb.h"
 typedef google::protobuf::Map<std::string, caffe2::TensorProto> OutMap;
 
