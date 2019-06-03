@@ -41,6 +41,7 @@ def sendRequest(url):
 
     else:
         # handle error msg
+	print(res.headers['X-Ddy-Error-Message'])
         print(res.content)
 
 if __name__ == '__main__':
