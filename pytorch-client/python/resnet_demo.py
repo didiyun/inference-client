@@ -34,6 +34,7 @@ def sendRequest(url):
         response.ParseFromString(res.content)
         print(response)
     else:
+	print(res.headers['X-Ddy-Error-Message'])
 	print(res.content)
 
 if __name__ == '__main__':
