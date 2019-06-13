@@ -52,10 +52,14 @@ std::string prepareRequest() {
     tensor_proto.mutable_tensor_shape()->add_dim()->set_size(1);
     tensor_proto.mutable_tensor_shape()->add_dim()->set_size(784);
 
-    for (auto pixel: mnist_sample_28x28()) {
-      tensor_proto.add_float_val(pixel);
-    }
+    // for (auto pixel: mnist_sample_28x28()) {
+    //   tensor_proto.add_float_val(pixel);
+    // }
 
+    // google::protobuf::RepeatedField<float> data(mnist_sample_28x28().begin(), mnist_sample_28x28().end());
+    // tensor_proto.mutable_float_val()->Swap(&data);
+
+    *tensor_proto.mutable_float_val() = {mnist_sample_28x28().begin(), mnist_sample_28x28().end()};
     PredictRequest request;
 
     ModelSpec* spec = request.mutable_model_spec();
