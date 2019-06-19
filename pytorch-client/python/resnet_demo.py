@@ -20,11 +20,15 @@ def sendRequest(url):
     data = request.SerializeToString()
 
     data_type = "application/proto"
+
+    #!!! Add Appcode here
+    token = "YOUR_CODE"
+
     headers = {
-        # !!! set content type 
+        # !!! set content type
         'content-type': data_type,
         # !!! replace your token
-        'Authorization': "AppCode YOUR_CODE"
+        'Authorization': "AppCode " + token
     }
 
     res = requests.post(url=url,
