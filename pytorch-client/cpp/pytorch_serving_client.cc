@@ -20,6 +20,7 @@
 #include <curl/curl.h>
 
 #include "protos/caffe2_service.pb.h"
+
 typedef google::protobuf::Map<std::string, caffe2::TensorProto> OutMap;
 
 std::string prepareRequest() {
@@ -113,6 +114,7 @@ int main(int argc, char* argv[]) {
         struct curl_slist *headers = NULL;
         headers = curl_slist_append(headers, "content-type: application/proto");
         headers = curl_slist_append(headers, "Authorization: AppCode YOUR_CODE");
+	    headers = curl_slist_append(headers, "Expect:");
 
         curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);

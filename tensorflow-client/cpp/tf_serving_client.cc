@@ -139,6 +139,7 @@ int main(int argc, char* argv[]) {
         struct curl_slist *headers = NULL;
         headers = curl_slist_append(headers, "content-type: application/proto");
         headers = curl_slist_append(headers, "Authorization: AppCode YOUR_CODE");
+        headers = curl_slist_append(headers, "Expect:");
 
         curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
