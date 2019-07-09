@@ -6,6 +6,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -std=c++11 -DNDEBUG -W")
 include(FindProtobuf)
 find_package(Protobuf REQUIRED)
 
+include_directories("/usr/local/include/")
+
 FILE(GLOB TF_PROTOS "../protos/*.proto")
 
 execute_process(
